@@ -46,52 +46,73 @@ const postArray = [
     },
 ];
 
-const containerHTML = document.querySelector('.posts-list');
-
-
-for (let i=0; i<postArray.length; i++){
-    containerHTML.innerHTML += `
-        <div class="post">
-            <div class="post__header">
-                <div class="post-meta">                    
-                    <div class="post-meta__icon">
-                        <img class="profile-pic" src="${postArray[i].profilePic}" alt="${postArray[i].autor}">                    
+function postCreator (container){
+    container.innerHTML = '';
+    for (let i=0; i<postArray.length; i++){
+        container.innerHTML += `
+            <div class="post">
+                <div class="post__header">
+                    <div class="post-meta">                    
+                        <div class="post-meta__icon">
+                            <img class="profile-pic" src="${postArray[i].profilePic}" alt="${postArray[i].autor}">                    
+                        </div>
+                        <div class="post-meta__data">
+                            <div class="post-meta__author">${postArray[i].autor}</div>
+                            <div class="post-meta__time">${postArray[i].date}</div>
+                        </div>                    
                     </div>
-                    <div class="post-meta__data">
-                        <div class="post-meta__author">${postArray[i].autor}</div>
-                        <div class="post-meta__time">${postArray[i].date}</div>
-                    </div>                    
                 </div>
-            </div>
-            <div class="post__text">${postArray[i].text}</div>
-            <div class="post__image">
-                <img src="${postArray[i].img}" alt="">
-            </div>
-            <div class="post__footer">
-                <div class="likes js-likes">
-                    <div class="likes__cta">
-                        <a class="like-button  js-like-button" href="#" data-postid="${postArray[i].idN}">
-                            <i class="like-button__icon fas fa-thumbs-up" aria-hidden="true"></i>
-                            <span class="like-button__label">Mi Piace</span>
-                        </a>
-                    </div>
-                    <div class="likes__counter">
-                        Piace a <b id="like-counter-1" class="js-likes-counter">${postArray[i].likesN}</b> persone
-                    </div>
-                </div> 
-            </div>            
-        </div>`
+                <div class="post__text">${postArray[i].text}</div>
+                <div class="post__image">
+                    <img src="${postArray[i].img}" alt="">
+                </div>
+                <div class="post__footer">
+                    <div class="likes js-likes">
+                        <div class="likes__cta">
+                            <a class="like-button  js-like-button" href="#${postArray[i].idN}" data-postid="${postArray[i].idN}">
+                                <i class="like-button__icon fas fa-thumbs-up" aria-hidden="true"></i>
+                                <span class="like-button__label">Mi Piace</span>
+                            </a>
+                        </div>
+                        <div class="likes__counter">
+                            Piace a <b id="like-counter-${i}" class="js-likes-counter">${postArray[i].likesN}</b> persone
+                        </div>
+                    </div> 
+                </div>            
+            </div>`
+    }
 }
 
 const likedPost = [];
 
-for (let i=0; i<postArray.length; i++){
-    let likeButton = document.querySelector(`${postArray[i].idN}`);
+const containerHTML = document.querySelector('.posts-list');
 
-    likeButton.addEventListener('click', function(){
-        postArray[i].likesN++;
-        this.style.color="blue";
-        likedPost.push(postArray[i].id);
+
+for (let i=0; i<postArray.length; i++){
+
+    postCreator (containerHTML);
+  
+}
+
+const likeButtons = document.querySelectorAll(`.like-button`);
+
+for (let i=0; i<postArray.length; i++){
+    let likeCounter=document.getElementById(`like-counter-${i}`);
+
+    likeButtons[i].addEventListener('click', function(){
+        if (likeButtons[i]==!likedPost){
+            postArray[i].likesN--;
+            this.style.color="black";
+            delete likedPost[likeButtons[i]] ;
+            likeCounter.innerHTML= postArray[i].likesN;
+        } else{
+            postArray[i].likesN++;
+            this.style.color="blue";
+            likedPost.push(likeButtons[i]);
+            likeCounter.innerHTML= postArray[i].likesN;
+        }
+        
+        
     })
 
 }
